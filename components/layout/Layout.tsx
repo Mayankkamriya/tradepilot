@@ -18,7 +18,7 @@ export default function Layout({ children, title = 'TradePilot' }: LayoutProps) 
       
       <Navbar />
       
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="">
         {children}
       </main>
       

@@ -1,29 +1,29 @@
 
 import Link from 'next/link';
-// import ProjectCard from '../../components/ProjectCard';
+import ProjectCard from '../../components/ProjectCard';
 
 export default function Home() {
   // In a real app, you would fetch these from your API
-  // const featuredProjects = [
-  //   {
-  //     id: '1',
-  //     title: 'Website Redesign',
-  //     description: 'Looking for a designer to redesign our company website with modern UI/UX principles.',
-  //     budget: '$1,000 - $2,500',
-  //     deadline: '2023-12-15',
-  //     status: 'Pending',
-  //     bidsCount: 5,
-  //   },
-  //   {
-  //     id: '2',
-  //     title: 'Mobile App Development',
-  //     description: 'Need an experienced React Native developer to build a cross-platform mobile application.',
-  //     budget: '$5,000 - $10,000',
-  //     deadline: '2023-12-30',
-  //     status: 'Pending',
-  //     bidsCount: 8,
-  //   },
-  // ];
+  const featuredProjects = [
+    {
+      id: '1',
+      title: 'Website Redesign',
+      description: 'Looking for a designer to redesign our company website with modern UI/UX principles.',
+      budget: '$1,000 - $2,500',
+      deadline: '2023-12-15',
+      status: 'Pending',
+      bidsCount: 5,
+    },
+    {
+      id: '2',
+      title: 'Mobile App Development',
+      description: 'Need an experienced React Native developer to build a cross-platform mobile application.',
+      budget: '$5,000 - $10,000',
+      deadline: '2023-12-30',
+      status: 'Pending',
+      bidsCount: 8,
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -105,11 +105,11 @@ export default function Home() {
             </p>
           </div>
 
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
-          </div> */}
+          </div>
 
           <div className="text-center mt-10">
             <Link
