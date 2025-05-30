@@ -1,4 +1,6 @@
+import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -8,19 +10,93 @@ interface AuthModalProps {
 }
 
 export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthModalProps) {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     name: '',
     userType: 'buyer',
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle authentication logic
-    console.log(formData);
+    
+    // Basic form validation
+    if (!formData.email || !formData.password) {
+      toast.warning('Please fill in all required fields');
+      return;
+    }
+
+    if (type === 'register' && !formData.name) {
+      toast.warning('Please enter your name');
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      let response;
+      let endpoint;
+      let body;
+
+      if (type === 'login') {
+        endpoint = '/api/auth/login';
+        body = {
+          email: formData.email,
+          password: formData.password
+        };
+      } else {
+        endpoint = '/api/auth/signup';
+        body = {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.userType.toUpperCase()
+        };
+      }
+
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Something went wrong');
+      }
+
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('role', data.user.role);
+window.dispatchEvent(new Event('storage'));
+
+      toast.success(type === 'login' ? 'Login successful!' : 'Registration successful!');
+      router.push('/');
+      // Close modal after successful auth
+      onClose();
+      
+      setFormData({
+        email: '',
+        password: '',
+        name: '',
+        userType: 'buyer',
+      });
+
+
+    } catch (error: any) {
+      toast.error(error.message || 'Authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -129,9 +205,16 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
 
           <button
             type="submit"
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            disabled={isLoading}
           >
-            {type === 'login' ? 'Login' : 'Register'}
+            {isLoading ? (
+              'Processing...'
+            ) : type === 'login' ? (
+              'Login'
+            ) : (
+              'Register'
+            )}
           </button>
         </form>
       </div>
