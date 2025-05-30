@@ -224,7 +224,7 @@ export default function BuyerProjectDetail() {
                 <div className="p-4 bg-white border border-gray-200 rounded-lg">
                   <h3 className="font-medium text-gray-900 mb-2">Current Status: In Progress</h3>
                   <p className="text-gray-700 mb-4">
-                    The seller is working on your project. You'll be notified when they submit deliverables.
+                    The seller is working on your project. You&#39;ll be notified when they submit deliverables.
                   </p>
                   <button
                     type="button"
