@@ -70,6 +70,7 @@ export default function BuyerProjectDetail() {
         setProject(data);
         setLoading(false);
       } catch (err) {
+        console.log(err)
         setError(true);
         setLoading(false);
       }
@@ -112,7 +113,7 @@ export default function BuyerProjectDetail() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Project Not Found</h1>
-          <p className="text-gray-600 mb-6">The project you're looking for doesn't exist or may have been removed.</p>
+          <p className="text-gray-600 mb-6">The project you&#39;re looking for doesn&#39;t exist or may have been removed.</p>
           <button
             onClick={() => router.push('/dashboard/buyer')}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"

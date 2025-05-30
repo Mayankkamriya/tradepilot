@@ -90,7 +90,7 @@ export default async function BuyerDashboard() {
           <div className="divide-y divide-gray-200">
             {projects.length === 0 ? (
               <div className="px-4 py-12 text-center">
-                <p className="text-gray-500">You haven't created any projects yet.</p>
+                <p className="text-gray-500">You haven&#39;t created any projects yet.</p>
                 <Link
                   href="/dashboard/buyer/projects/create"
                   className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"

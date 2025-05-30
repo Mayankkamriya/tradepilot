@@ -41,7 +41,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
     setIsLoading(true);
 
     try {
-      let response;
+      // let response;
       let endpoint;
       let body;
 
@@ -61,7 +61,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
         };
       }
 
-      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const   response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,9 +91,10 @@ window.dispatchEvent(new Event('storage'));
         userType: 'buyer',
       });
 
+    } catch (error) {
+      const err = error as Error;
+      toast.error(err.message || 'Authentication failed. Please try again.');
 
-    } catch (error: any) {
-      toast.error(error.message || 'Authentication failed. Please try again.');
     } finally {
       setIsLoading(false);
     }

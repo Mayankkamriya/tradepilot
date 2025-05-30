@@ -67,7 +67,7 @@ export default async function SellerBids() {
           <div className="divide-y divide-gray-200">
             {bids.length === 0 ? (
               <div className="px-4 py-12 text-center">
-                <p className="text-gray-500">You haven't placed any bids yet.</p>
+                <p className="text-gray-500">You haven&#39;t placed any bids yet.</p>
                 <Link
                   href="/dashboard/seller"
                   className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
