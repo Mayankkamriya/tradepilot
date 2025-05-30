@@ -8,12 +8,12 @@ interface LayoutProps {
   title?: string;
 }
 
-export default function Layout({ children, title = 'Seller-Buyer Platform' }: LayoutProps) {
+export default function Layout({ children, title = 'TradePilot' }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Head>
         <title>{title}</title>
-        <meta name="description" content="Seller-Buyer Project Bidding System" />
+        <meta name="description" content="TradePilot Project Bidding System" />
       </Head>
       
       <Navbar />
