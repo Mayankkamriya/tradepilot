@@ -1,6 +1,17 @@
 import Link from 'next/link';
 import StatusBadge from './StatusBadge';
 
+// interface Bid {
+//   id: string;
+//   amount: number;
+//   estimatedTime: string;
+//   message: string;
+//   createdAt: string;
+//   sellerName: string;
+//   sellerId: string;
+//   projectId: string;
+// }
+
 interface Project {
   id: string;
   title: string;
@@ -9,6 +20,7 @@ interface Project {
   deadline: string;
   status: string;
   bidsCount: number;
+  // bids: Bid[];
 }
 
 interface ProjectCardProps {
@@ -37,13 +49,15 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </div>
           <div>
             <p className="text-sm text-gray-500">Deadline</p>
-            <p className="font-medium text-gray-900">{project.deadline}</p>
+            <p className="font-medium text-gray-900">{new Date(project.deadline).toLocaleDateString()}</p>
           </div>
         </div>
         
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-500">
             {project.bidsCount} {project.bidsCount === 1 ? 'bid' : 'bids'}
+            {/* {project.bids.length} {project.bids.length === 1 ? 'bid' : 'bids'} */}
+
           </span>
           <Link
             href={`/dashboard/seller/projects/${project.id}`}

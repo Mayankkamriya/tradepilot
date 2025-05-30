@@ -2,13 +2,14 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import StatusBadge from '../../../../../components/StatusBadge';
 import BidForm from '../../../../../components/BidForm';
+import { getProjects } from '@/pages/api/projectApi';
 
 interface Project {
   id: string;
   title: string;
   description: string;
-  minBudget: number;
-  maxBudget: number;
+  budgetMin: number;
+  budgetMax: number;
   deadline: string;
   status: string;
   bids: Bid[];
@@ -35,40 +36,13 @@ export default function ProjectDetail() {
 
     const fetchProject = async () => {
       try {
-
-        // Mock data
-        const data: Project = {
-          id: id as string,
-          title: 'Website Redesign',
-          description: 'Looking for a designer to redesign our company website with modern UI/UX principles. The website should be responsive and accessible. We need a complete redesign of all pages including homepage, about us, services, and contact pages.',
-          minBudget: 1000,
-          maxBudget: 2500,
-          deadline: '2023-12-15',
-          status: 'Pending',
-          bids: [
-            {
-              id: '1',
-              amount: 2000,
-              sellerName: 'Creative Designs Co.',
-              estimatedTime: '3 weeks',
-              message: 'We have extensive experience in website redesigns for similar businesses. Our portfolio includes 50+ successful projects.',
-              createdAt: '2023-11-10',
-            },
-            {
-              id: '2',
-              amount: 1800,
-              sellerName: 'UI/UX Pros',
-              estimatedTime: '4 weeks',
-              message: 'Specializing in user-centered design that improves conversion rates. We follow the latest web design trends.',
-              createdAt: '2023-11-12',
-            },
-          ],
-        };
-        
-        setProject(data);
+        const allProjects = await getProjects();
+        const foundProject = allProjects.find((p: Project) => p.id === id);
+        if (!foundProject) throw new Error("Project not found");
+        setProject(foundProject);
         setLoading(false);
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+        console.error(error);
         setError(true);
         setLoading(false);
       }
@@ -117,7 +91,7 @@ export default function ProjectDetail() {
               <div className="text-right">
                 <p className="text-sm text-gray-500">Budget Range</p>
                 <p className="text-lg font-semibold text-indigo-600">
-                  ${project.minBudget.toLocaleString()} - ${project.maxBudget.toLocaleString()}
+                  ${project.budgetMin.toLocaleString()} - ${project.budgetMax.toLocaleString()}
                 </p>
               </div>
             </div>
