@@ -1,53 +1,58 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-// import ProjectCard from '../../../components/ProjectCard';
 import StatusBadge from '../../../components/StatusBadge';
+import { getProjects } from '../api/projectApi';
+
+interface Bid {
+  id: string;
+  amount: number;
+  estimatedTime: string;
+  message: string;
+  createdAt: string;
+  sellerName: string;
+  sellerId: string;
+  projectId: string;
+}
 
 interface Project {
   id: string;
   title: string;
   description: string;
-  budget: string;
+  budgetMin: number;
+  budgetMax: number;
   deadline: string;
   status: string;
-  bidsCount: number;
+  bids: Bid[];
 }
 
-async function getBuyerProjects(): Promise<Project[]> {
-  
-  // Mock data
-  return [
-    {
-      id: '1',
-      title: 'Website Redesign',
-      description: 'Looking for a designer to redesign our company website with modern UI/UX principles.',
-      budget: '$1,000 - $2,500',
-      deadline: '2023-12-15',
-      status: 'Pending',
-      bidsCount: 5,
-    },
-    {
-      id: '2',
-      title: 'Mobile App Development',
-      description: 'Need an experienced React Native developer to build a cross-platform mobile application.',
-      budget: '$5,000 - $10,000',
-      deadline: '2023-12-30',
-      status: 'In Progress',
-      bidsCount: 8,
-    },
-    {
-      id: '3',
-      title: 'Content Marketing Strategy',
-      description: 'Looking for a content marketer to develop a 6-month strategy for our SaaS product.',
-      budget: '$3,000 - $5,000',
-      deadline: '2023-11-30',
-      status: 'Completed',
-      bidsCount: 4,
-    },
-  ];
-}
+export default function BuyerDashboard() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-export default async function BuyerDashboard() {
-  const projects = await getBuyerProjects();
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const result = await getProjects();
+        setProjects(result);
+      } catch (err) {
+        console.error(err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return <div className="p-4">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-500">Failed to load projects.</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -71,13 +76,13 @@ export default async function BuyerDashboard() {
           <div className="bg-white shadow rounded-lg p-4">
             <h3 className="text-sm font-medium text-gray-500">Projects in Progress</h3>
             <p className="text-2xl font-semibold text-gray-900">
-              {projects.filter(p => p.status === 'In Progress').length}
+              {projects.filter(p => p.status === 'IN_PROGRESS').length}
             </p>
           </div>
           <div className="bg-white shadow rounded-lg p-4">
             <h3 className="text-sm font-medium text-gray-500">Completed Projects</h3>
             <p className="text-2xl font-semibold text-gray-900">
-              {projects.filter(p => p.status === 'Completed').length}
+              {projects.filter(p => p.status === 'COMPLETED').length}
             </p>
           </div>
         </div>
@@ -122,7 +127,8 @@ export default async function BuyerDashboard() {
                       </div>
                       <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
                         <p>
-                          {project.bidsCount} {project.bidsCount === 1 ? 'bid' : 'bids'} • Deadline: {project.deadline}
+                          {project.bids.length} {project.bids.length === 1 ? 'bid' : 'bids'} • Deadline:{' '}
+                          {new Date(project.deadline).toLocaleDateString()}
                         </p>
                       </div>
                     </div>

@@ -9,44 +9,51 @@ interface Project {
   deadline: string;
   status: string;
   bidsCount: number;
+  bids: Bid[];
 }
 
-async function getSellerProjects(): Promise<Project[]> {
+import { getProjects } from '../api/projectApi';
+import { useEffect, useState } from 'react';
 
-  // Mock data
-  return [
-    {
-      id: '1',
-      title: 'Website Redesign',
-      description: 'Looking for a designer to redesign our company website with modern UI/UX principles.',
-      budget: '$1,000 - $2,500',
-      deadline: '2023-12-15',
-      status: 'Pending',
-      bidsCount: 5,
-    },
-    {
-      id: '2',
-      title: 'Mobile App Development',
-      description: 'Need an experienced React Native developer to build a cross-platform mobile application.',
-      budget: '$5,000 - $10,000',
-      deadline: '2023-12-30',
-      status: 'Pending',
-      bidsCount: 8,
-    },
-    {
-      id: '3',
-      title: 'Logo Design',
-      description: 'Looking for a creative designer to create a modern logo for our startup.',
-      budget: '$500 - $1,000',
-      deadline: '2023-11-20',
-      status: 'Pending',
-      bidsCount: 3,
-    },
-  ];
+interface Bid {
+  id: string;
+  amount: number;
+  estimatedTime: string;
+  message: string;
+  createdAt: string;
+  sellerName: string;
+  sellerId: string;
+  projectId: string;
 }
 
-export default async function SellerDashboard() {
-  const projects = await getSellerProjects();
+export default function BuyerDashboard() {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const result = await getProjects();
+        setProjects(result);
+      } catch (err) {
+        console.error(err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return <div className="p-4">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-red-500">Failed to load projects.</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
