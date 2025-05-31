@@ -73,8 +73,8 @@ export default function SellerBids() {
       setLoading(false);
     }
   };
-// eslint-disable-line @typescript-eslint/no-unused-vars
-  const getBidStatus = (bid: Bid) => {
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  const getBidStatus = (bid: Bid) => { 
     return 'Submitted';
   };
 
