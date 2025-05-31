@@ -33,10 +33,12 @@ export default function ProjectDetail() {
 
    const refreshProject = async () => {
     try {
+      setLoading(true);
       const allProjects = await getProjects();
       const foundProject = allProjects.find((p: Project) => p.id === id);
       if (!foundProject) throw new Error("Project not found");
       setProject(foundProject);
+      setError(false);
     } catch (error) {
       console.error(error);
       setError(true);
@@ -49,33 +51,8 @@ export default function ProjectDetail() {
     if (!id) return;
     refreshProject();
   }, [id]);
-  
 
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchProject = async () => {
-      try {
-        const allProjects = await getProjects();
-        const foundProject = allProjects.find((p: Project) => p.id === id);
-        if (!foundProject) throw new Error("Project not found");
-        setProject(foundProject);
-        setLoading(false);
-      } catch (error) {
-        console.error(error);
-        setError(true);
-        setLoading(false);
-      }
-    };
-
-    fetchProject();
-  }, [id]);
-
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  if (error || !project) {
+  if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -99,6 +76,15 @@ export default function ProjectDetail() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow rounded-lg overflow-hidden">
+          {loading ?(   
+          <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+              <p className="mt-4 text-gray-600">Loading project details...</p>
+            </div>
+          </div>
+        ) : project ? (
+            <>
           {/* Project Header */}
           <div className="px-6 py-5 border-b border-gray-200">
             <div className="flex justify-between items-start">
@@ -167,10 +153,11 @@ export default function ProjectDetail() {
           {/* Bid Form (for sellers) */}
           <div className="border-t border-gray-200 px-6 py-5 bg-gray-50">
             <h2 className="text-lg font-medium text-gray-900 mb-4">Place Your Bid</h2>
-            {/* <BidForm projectId={project.id} /> */}
          <BidForm projectId={project.id} onBidSubmitted={refreshProject} />
  
           </div>
+        </>
+      ) : null}
         </div>
       </div>
     </div>

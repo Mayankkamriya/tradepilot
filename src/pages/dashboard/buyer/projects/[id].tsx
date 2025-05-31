@@ -53,9 +53,7 @@ export default function BuyerProjectDetail() {
   }, [id]);
 
   const handleSelectBid = async (bidId: string) => {
-    // In a real app, you would call your API to select the bid
     console.log(`Selected bid ${bidId} for project ${id}`);
-    // Update project status and selected bid
     if (project) {
       setProject({
         ...project,
@@ -66,9 +64,7 @@ export default function BuyerProjectDetail() {
   };
 
   const handleSubmitReview = async () => {
-    // In a real app, you would submit the review to your API
     console.log('Review submitted');
-    // Update project status
     if (project) {
       setProject({
         ...project,
@@ -77,13 +73,9 @@ export default function BuyerProjectDetail() {
     }
   };
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
   if (error || !project) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Project Not Found</h1>
           <p className="text-gray-600 mb-6">The project you&#39;re looking for doesn&#39;t exist or may have been removed.</p>
@@ -102,6 +94,16 @@ export default function BuyerProjectDetail() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow rounded-lg overflow-hidden">
+         
+                   {loading ?(   
+          <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="text-center">
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+              <p className="mt-4 text-gray-600">Loading project details...</p>
+            </div>
+          </div>
+        ) : project ? (
+            <>
                    {/* Project Header */}
           <div className="px-6 py-5 border-b border-gray-200">
             <div className="flex justify-between items-start">
@@ -122,7 +124,8 @@ export default function BuyerProjectDetail() {
               </div>
             </div>
           </div>
-
+      </>
+      ) : null}
           {/* Project Details */}
           <div className="px-6 py-5">
             <h2 className="text-lg font-medium text-gray-900 mb-2">Project Description</h2>
