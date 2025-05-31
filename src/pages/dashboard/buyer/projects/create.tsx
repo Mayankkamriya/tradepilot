@@ -17,7 +17,7 @@ export default function CreateProject() {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Please Login");
-      throw new Error("No auth token");
+      return;
     }
     return token;
   };
@@ -38,7 +38,8 @@ export default function CreateProject() {
     // Submit to your API
     try {
       const token = getAuthToken();
-      const response = await fetch('https://buddify-backend.vercel.app/api/projects', {
+      if(!token) return;
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/projects`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

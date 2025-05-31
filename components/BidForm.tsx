@@ -1,6 +1,6 @@
-'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 
 interface BidFormProps {
   projectId: string;
@@ -12,15 +12,41 @@ export default function BidForm({ projectId }: BidFormProps) {
     estimatedTime: '',
     message: '',
   });
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    // Check for token when component mounts
+    checkAuth();
+  }, []);
+
+  const checkAuth = () => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please login to submit a bid');
+        return;
+      }
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Submit to your API
+    
+    if (!isClient) return;
+    
+    const token = localStorage.getItem('token');
+    if (!token) {
+      toast.error('Please login to submit a bid');
+      return;
+    }
+
     try {
-      const response = await fetch('/api/bids', {
+      const response = await fetch('http://localhost:5000/api/bids', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify({
           projectId,
@@ -31,18 +57,25 @@ export default function BidForm({ projectId }: BidFormProps) {
       });
 
       if (response.ok) {
-        // Handle successful bid submission
-        alert('Bid submitted successfully!');
+        toast.success('Bid submitted successfully!');
         setFormData({
           amount: '',
           estimatedTime: '',
           message: '',
         });
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.message || 'Failed to submit bid');
       }
     } catch (error) {
       console.error('Error submitting bid:', error);
+      toast.error('An error occurred while submitting your bid');
     }
   };
+
+  if (!isClient) {
+    return null; // or a loading spinner
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
