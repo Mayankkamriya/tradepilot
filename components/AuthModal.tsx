@@ -77,6 +77,12 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.user.role);
+
+      const { password, ...userWithoutPassword } = data.user;
+
+// Store user details without the password
+localStorage.setItem('user', JSON.stringify(userWithoutPassword));
+
 window.dispatchEvent(new Event('storage'));
 
       toast.success(type === 'login' ? 'Login successful!' : 'Registration successful!');

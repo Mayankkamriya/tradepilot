@@ -1,39 +1,70 @@
-'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function CreateProject() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    minBudget: '',
-    maxBudget: '',
+    budgetMin: '',
+    budgetMax: '',
     deadline: '',
   });
+
+  const getAuthToken = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please Login");
+      throw new Error("No auth token");
+    }
+    return token;
+  };
+
+   const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      budgetMin: '',
+      budgetMax: '',
+      deadline: '',
+    });
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Submit to your API
     try {
-      const response = await fetch('/api/projects', {
+      const token = getAuthToken();
+      const response = await fetch('https://buddify-backend.vercel.app/api/projects', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
-          ...formData,
-          minBudget: parseFloat(formData.minBudget),
-          maxBudget: parseFloat(formData.maxBudget),
+          title: formData.title,
+          description: formData.description,
+          budgetMin: parseFloat(formData.budgetMin),
+          budgetMax: parseFloat(formData.budgetMax),
+          deadline: formData.deadline,
         }),
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        router.push('/dashboard/buyer/projects');
+        toast.success('Project created successfully!');
+        resetForm()
+        router.push('/dashboard/buyer');
+      } else {
+        toast.error(data.message || 'Failed to create project');
       }
     } catch (error) {
       console.error('Error creating project:', error);
+      toast.error('An error occurred while creating the project');
     }
   };
 
@@ -74,28 +105,28 @@ export default function CreateProject() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
-                <label htmlFor="minBudget" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="budgetMin" className="block text-sm font-medium text-gray-700 mb-1">
                   Minimum Budget ($)
                 </label>
                 <input
                   type="number"
-                  id="minBudget"
+                  id="budgetMin"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  value={formData.minBudget}
-                  onChange={(e) => setFormData({ ...formData, minBudget: e.target.value })}
+                  value={formData.budgetMin}
+                  onChange={(e) => setFormData({ ...formData, budgetMin: e.target.value })}
                   required
                 />
               </div>
               <div>
-                <label htmlFor="maxBudget" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="budgetMax" className="block text-sm font-medium text-gray-700 mb-1">
                   Maximum Budget ($)
                 </label>
                 <input
                   type="number"
-                  id="maxBudget"
+                  id="budgetMax"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  value={formData.maxBudget}
-                  onChange={(e) => setFormData({ ...formData, maxBudget: e.target.value })}
+                  value={formData.budgetMax}
+                  onChange={(e) => setFormData({ ...formData, budgetMax: e.target.value })}
                   required
                 />
               </div>

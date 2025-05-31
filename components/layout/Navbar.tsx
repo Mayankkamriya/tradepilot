@@ -46,6 +46,7 @@ useEffect(() => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
+    localStorage.removeItem('user');
     setIsLoggedIn(false);
     toast.success('Logged out successfully');
     router.push('/');
