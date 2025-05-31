@@ -272,7 +272,7 @@ export default function ProfilePage() {
                         </p>
                         {bid.message && (
                           <p className="text-sm text-gray-700 bg-gray-100 p-2 rounded">
-                            "{bid.message}"
+                            &#34;{bid.message}&#34;
                           </p>
                         )}
                       </div>
