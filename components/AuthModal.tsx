@@ -121,13 +121,13 @@ window.dispatchEvent(new Event('storage'));
 
         <div className="flex border-b mb-4">
           <button
-            className={`py-2 px-4 font-medium ${type === 'login' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500'}`}
+            className={`cursor-pointer py-2 px-4 font-medium ${type === 'login' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500'}`}
             onClick={() => onTypeChange('login')}
           >
             Login
           </button>
           <button
-            className={`py-2 px-4 font-medium ${type === 'register' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500'}`}
+            className={`cursor-pointer py-2 px-4 font-medium ${type === 'register' ? 'border-b-2 border-indigo-500 text-indigo-600' : 'text-gray-500'}`}
             onClick={() => onTypeChange('register')}
           >
             Register
