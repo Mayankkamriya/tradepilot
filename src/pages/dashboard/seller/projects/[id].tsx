@@ -31,6 +31,26 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+   const refreshProject = async () => {
+    try {
+      const allProjects = await getProjects();
+      const foundProject = allProjects.find((p: Project) => p.id === id);
+      if (!foundProject) throw new Error("Project not found");
+      setProject(foundProject);
+    } catch (error) {
+      console.error(error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!id) return;
+    refreshProject();
+  }, [id]);
+  
+
   useEffect(() => {
     if (!id) return;
 
@@ -71,6 +91,9 @@ export default function ProjectDetail() {
       </div>
     );
   }
+
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -144,7 +167,9 @@ export default function ProjectDetail() {
           {/* Bid Form (for sellers) */}
           <div className="border-t border-gray-200 px-6 py-5 bg-gray-50">
             <h2 className="text-lg font-medium text-gray-900 mb-4">Place Your Bid</h2>
-            <BidForm projectId={project.id} />
+            {/* <BidForm projectId={project.id} /> */}
+         <BidForm projectId={project.id} onBidSubmitted={refreshProject} />
+ 
           </div>
         </div>
       </div>

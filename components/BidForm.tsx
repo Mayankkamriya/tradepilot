@@ -4,9 +4,10 @@ import { toast } from 'react-toastify';
 
 interface BidFormProps {
   projectId: string;
+  onBidSubmitted: () => void;
 }
 
-export default function BidForm({ projectId }: BidFormProps) {
+export default function BidForm({ projectId, onBidSubmitted }: BidFormProps) {
   const [formData, setFormData] = useState({
     amount: '',
     estimatedTime: '',
@@ -16,7 +17,6 @@ export default function BidForm({ projectId }: BidFormProps) {
 
   useEffect(() => {
     setIsClient(true);
-    // Check for token when component mounts
     checkAuth();
   }, []);
 
@@ -42,7 +42,7 @@ export default function BidForm({ projectId }: BidFormProps) {
     }
 
     try {
-      const response = await fetch('http://localhost:5000/api/bids', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/bids`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,6 +63,7 @@ export default function BidForm({ projectId }: BidFormProps) {
           estimatedTime: '',
           message: '',
         });
+        onBidSubmitted();
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || 'Failed to submit bid');
@@ -74,7 +75,7 @@ export default function BidForm({ projectId }: BidFormProps) {
   };
 
   if (!isClient) {
-    return null; // or a loading spinner
+    return null; 
   }
 
   return (
