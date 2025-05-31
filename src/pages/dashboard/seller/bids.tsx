@@ -28,8 +28,7 @@ export default function SellerBids() {
 
   const fetchUserBids = async () => {
     try {
-      // Get token from localStorage
-      const token = localStorage.getItem('token'); // Adjust key name as per your storage
+      const token = localStorage.getItem('token');
       
       if (!token) {
         toast.error('Please log in to view your bids');
@@ -49,7 +48,7 @@ export default function SellerBids() {
       if (!response.ok) {
         if (response.status === 401) {
           toast.error('Please log in again');
-          localStorage.removeItem('token'); // Clear invalid token
+          localStorage.removeItem('token');
           setError('Authentication expired');
         } else {
           toast.error('Failed to fetch bids');
@@ -74,24 +73,10 @@ export default function SellerBids() {
       setLoading(false);
     }
   };
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   const getBidStatus = (bid: Bid) => {
-    // You might want to add logic here to determine bid status
-    // based on your business logic
-    return 'Submitted'; // Default status
+    return 'Submitted';
   };
-
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
-          <p className="mt-4 text-gray-600">Loading your bids...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -127,7 +112,14 @@ export default function SellerBids() {
             <h3 className="text-lg font-medium leading-6 text-gray-900">Bid History</h3>
           </div>
           <div className="divide-y divide-gray-200">
-            {bids.length === 0 ? (
+            {loading ? (
+              <div className="px-4 py-12 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+                  <p className="mt-4 text-gray-600">Loading your bids...</p>
+                </div>
+              </div>
+            ) : bids.length === 0 ? (
               <div className="px-4 py-12 text-center">
                 <p className="text-gray-500">You haven&#39;t placed any bids yet.</p>
                 <Link

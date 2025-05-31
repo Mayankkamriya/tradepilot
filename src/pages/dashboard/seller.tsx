@@ -49,9 +49,7 @@ export default function BuyerDashboard() {
     fetchProjects();
   }, []);
 
-  if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
+
 
   if (error) {
     return <div className="p-4 text-red-500">Failed to load projects.</div>;
@@ -90,7 +88,12 @@ export default function BuyerDashboard() {
 
         {/* Projects Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.length === 0 ? (
+          {loading ? (
+            <div className="col-span-full flex flex-col items-center justify-center py-16">
+              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+              <p className="mt-4 text-gray-600">Loading projects...</p>
+            </div>
+          ) : projects.length === 0 ? (
             <div className="col-span-full text-center py-12">
               <p className="text-gray-500">No projects available at the moment.</p>
             </div>
