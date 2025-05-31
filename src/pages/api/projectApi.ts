@@ -2,17 +2,17 @@ import axios from "axios";
 
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api`;
 
-const getAuthToken = () => {
-  const token = localStorage.getItem("token");
-  if (!token) throw new Error("No auth token");
-  return token;
-};
+// const getAuthToken = () => {
+//   const token = localStorage.getItem("token");
+//   if (!token) throw new Error("No auth token");
+//   return token;
+// };
 
 export const getProjects = async () => {
   try {
-    const token = getAuthToken();
+    // const token = getAuthToken();
     const response = await axios.get(`${API_BASE_URL}/projects`, {
-      headers: { Authorization: `Bearer ${token}` },
+      // headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {
