@@ -46,7 +46,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <div className="flex justify-between items-center mb-4">
           <div>
             <p className="text-sm text-gray-500">Budget</p>
-            <p className="font-medium text-indigo-600">${project.budgetMin.toLocaleString()} - ${project.budgetMax.toLocaleString()}</p>
+            <p className="font-medium text-indigo-600">₹{project.budgetMin.toLocaleString()} - ₹{project.budgetMax.toLocaleString()}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Deadline</p>

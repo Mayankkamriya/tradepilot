@@ -117,7 +117,7 @@ export default function BuyerProjectDetail() {
               <div className="text-right">
                 <p className="text-sm text-gray-500">Budget Range</p>
                 <p className="text-lg font-semibold text-indigo-600">
-                  ${project.budgetMin.toLocaleString()} - ${project.budgetMax.toLocaleString()}
+                  ₹{project.budgetMin.toLocaleString()} - ₹{project.budgetMax.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -157,7 +157,7 @@ export default function BuyerProjectDetail() {
                       </div>
                       <div className="text-right">
                         <p className="text-lg font-semibold text-indigo-600">
-                          ${bid.amount.toLocaleString()}
+                          ₹{bid.amount.toLocaleString()}
                         </p>
                         <p className="text-sm text-gray-500">
                           Est. time: {bid.estimatedTime}

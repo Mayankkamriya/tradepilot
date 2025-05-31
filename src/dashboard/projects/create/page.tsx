@@ -75,7 +75,7 @@ export default function CreateProject() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label htmlFor="minBudget" className="block text-sm font-medium text-gray-700 mb-1">
-                  Minimum Budget ($)
+                  Minimum Budget (₹)
                 </label>
                 <input
                   type="number"
@@ -88,7 +88,7 @@ export default function CreateProject() {
               </div>
               <div>
                 <label htmlFor="maxBudget" className="block text-sm font-medium text-gray-700 mb-1">
-                  Maximum Budget ($)
+                  Maximum Budget (₹)
                 </label>
                 <input
                   type="number"
