@@ -5,6 +5,8 @@ interface Project {
   id: string;
   title: string;
   description: string;
+  budgetMin: number;
+  budgetMax: number;
   budget: string;
   deadline: string;
   status: string;

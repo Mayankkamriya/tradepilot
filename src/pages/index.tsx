@@ -1,29 +1,83 @@
 
 import Link from 'next/link';
 import ProjectCard from '../../components/ProjectCard';
+import { useEffect, useState } from 'react';
+import { getProjects } from './api/projectApi';
+
+
+interface Bid {
+  id: string;
+  amount: number;
+  estimatedTime: string;
+  message: string;
+  createdAt: string;
+  sellerName: string;
+  sellerId: string;
+  projectId: string;
+}
+
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  budgetMin: number;
+  budgetMax: number;
+  deadline: string;
+  bidsCount: number;
+  status: string;
+  bids: Bid[];
+}
 
 export default function Home() {
   // In a real app, you would fetch these from your API
-  const featuredProjects = [
-    {
-      id: '1',
-      title: 'Website Redesign',
-      description: 'Looking for a designer to redesign our company website with modern UI/UX principles.',
-      budget: '$1,000 - $2,500',
-      deadline: '2023-12-15',
-      status: 'Pending',
-      bidsCount: 5,
-    },
-    {
-      id: '2',
-      title: 'Mobile App Development',
-      description: 'Need an experienced React Native developer to build a cross-platform mobile application.',
-      budget: '$5,000 - $10,000',
-      deadline: '2023-12-30',
-      status: 'Pending',
-      bidsCount: 8,
-    },
-  ];
+  // const featuredProjects = [
+  //   {
+  //     id: '1',
+  //     title: 'Website Redesign',
+  //     description: 'Looking for a designer to redesign our company website with modern UI/UX principles.',
+  //     budget: '$1,000 - $2,500',
+  //     deadline: '2023-12-15',
+  //     status: 'Pending',
+  //     bidsCount: 5,
+  //   },
+  //   {
+  //     id: '2',
+  //     title: 'Mobile App Development',
+  //     description: 'Need an experienced React Native developer to build a cross-platform mobile application.',
+  //     budget: '$5,000 - $10,000',
+  //     deadline: '2023-12-30',
+  //     status: 'Pending',
+  //     bidsCount: 8,
+  //   },
+  // ];
+
+   const [featuredProjects, setfeaturedProjects] = useState<Project[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+  
+    useEffect(() => {
+      const fetchProjects = async () => {
+        try {
+          const result = await getProjects();
+          setfeaturedProjects(result);
+        } catch (err) {
+          console.error(err);
+          setError(true);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchProjects();
+    }, []);
+  
+    if (loading) {
+      return <div className="p-4">Loading...</div>;
+    }
+  
+    if (error) {
+      return <div className="p-4 text-red-500">Failed to load projects.</div>;
+    }
 
   return (
     <div className="min-h-screen bg-gray-50">

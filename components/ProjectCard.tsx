@@ -1,26 +1,27 @@
 import Link from 'next/link';
 import StatusBadge from './StatusBadge';
 
-// interface Bid {
-//   id: string;
-//   amount: number;
-//   estimatedTime: string;
-//   message: string;
-//   createdAt: string;
-//   sellerName: string;
-//   sellerId: string;
-//   projectId: string;
-// }
+interface Bid {
+  id: string;
+  amount: number;
+  estimatedTime: string;
+  message: string;
+  createdAt: string;
+  sellerName: string;
+  sellerId: string;
+  projectId: string;
+}
 
 interface Project {
   id: string;
   title: string;
   description: string;
-  budget: string;
   deadline: string;
+  budgetMin: number;
+  budgetMax: number;
   status: string;
   bidsCount: number;
-  // bids: Bid[];
+  bids: Bid[];
 }
 
 interface ProjectCardProps {
@@ -45,7 +46,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <div className="flex justify-between items-center mb-4">
           <div>
             <p className="text-sm text-gray-500">Budget</p>
-            <p className="font-medium text-indigo-600">{project.budget}</p>
+            <p className="font-medium text-indigo-600">${project.budgetMin.toLocaleString()} - ${project.budgetMax.toLocaleString()}</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Deadline</p>
@@ -55,8 +56,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-500">
-            {project.bidsCount} {project.bidsCount === 1 ? 'bid' : 'bids'}
-            {/* {project.bids.length} {project.bids.length === 1 ? 'bid' : 'bids'} */}
+            {project.bids.length} {project.bids.length === 1 ? 'bid' : 'bids'}
 
           </span>
           <Link
