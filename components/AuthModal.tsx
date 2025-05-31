@@ -55,7 +55,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to send OTP');
+        toast.error(data.message || 'Failed to send OTP');
       }
 
       toast.success('OTP sent to your email');

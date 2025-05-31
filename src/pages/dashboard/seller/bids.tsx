@@ -1,51 +1,113 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import StatusBadge from '../../../../components/StatusBadge';
+import { toast } from 'react-toastify';
 
 interface Bid {
   id: string;
-  projectId: string;
-  projectTitle: string;
   amount: number;
-  status: string;
+  estimatedTime: string;
+  message: string;
   createdAt: string;
-  projectStatus: string;
+  sellerName: string;
+  sellerId: string;
+  projectId: string;
+  projectTitle?: string;
+  projectStatus?: string;
 }
 
-async function getSellerBids(): Promise<Bid[]> {
-  
-  return [
-    {
-      id: '1',
-      projectId: '101',
-      projectTitle: 'Website Redesign',
-      amount: 2000,
-      status: 'Submitted',
-      createdAt: '2023-11-10',
-      projectStatus: 'Pending',
-    },
-    {
-      id: '2',
-      projectId: '102',
-      projectTitle: 'Mobile App Development',
-      amount: 8500,
-      status: 'Accepted',
-      createdAt: '2023-11-05',
-      projectStatus: 'In Progress',
-    },
-    {
-      id: '3',
-      projectId: '103',
-      projectTitle: 'Logo Design',
-      amount: 750,
-      status: 'Rejected',
-      createdAt: '2023-10-28',
-      projectStatus: 'Completed',
-    },
-  ];
-}
 
-export default async function SellerBids() {
-  const bids = await getSellerBids();
+export default function SellerBids() {
+  const [bids, setBids] = useState<Bid[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchUserBids();
+  }, []);
+
+  const fetchUserBids = async () => {
+    try {
+      // Get token from localStorage
+      const token = localStorage.getItem('token'); // Adjust key name as per your storage
+      
+      if (!token) {
+        toast.error('Please log in to view your bids');
+        setError('Authentication required');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch('http://localhost:5000/api/auth/details', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          toast.error('Please log in again');
+          localStorage.removeItem('token'); // Clear invalid token
+          setError('Authentication expired');
+        } else {
+          toast.error('Failed to fetch bids');
+          setError('Failed to fetch data');
+        }
+        setLoading(false);
+        return;
+      }
+
+      const data = await response.json();
+      
+      if (data.status === 'success' && data.data.bids) {
+        setBids(data.data.bids);
+      } else {
+        setBids([]);
+      }
+    } catch (err) {
+      console.error('Error fetching bids:', err);
+      toast.error('Network error occurred');
+      setError('Network error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getBidStatus = (bid: Bid) => {
+    // You might want to add logic here to determine bid status
+    // based on your business logic
+    return 'Submitted'; // Default status
+  };
+
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-indigo-600"></div>
+          <p className="mt-4 text-gray-600">Loading your bids...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Link
+            href="/"
+            className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+          >
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -67,7 +129,7 @@ export default async function SellerBids() {
           <div className="divide-y divide-gray-200">
             {bids.length === 0 ? (
               <div className="px-4 py-12 text-center">
-                <p className="text-gray-500">You haven&#39;t placed any bids yet.</p>
+                <p className="text-gray-500">You haven't placed any bids yet.</p>
                 <Link
                   href="/dashboard/seller"
                   className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
@@ -81,19 +143,22 @@ export default async function SellerBids() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Project
+                        Project ID
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Bid Amount
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Estimated Time
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Project Status
+                        Date
                       </th>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Date
+                        Message
                       </th>
                       <th scope="col" className="relative px-6 py-3">
                         <span className="sr-only">View</span>
@@ -104,26 +169,33 @@ export default async function SellerBids() {
                     {bids.map((bid) => (
                       <tr key={bid.id}>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{bid.projectTitle}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {bid.projectTitle || `Project ${bid.projectId.slice(0, 8)}...`}
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">${bid.amount.toLocaleString()}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <StatusBadge status={bid.status} />
+                          <div className="text-sm text-gray-900">{bid.estimatedTime}</div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <StatusBadge status={bid.projectStatus} />
+                          <StatusBadge status={getBidStatus(bid)} />
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {new Date(bid.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-sm text-gray-900 max-w-xs truncate" title={bid.message}>
+                            {bid.message}
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                           <Link
                             href={`/dashboard/seller/projects/${bid.projectId}`}
                             className="text-indigo-600 hover:text-indigo-900"
                           >
-                            View
+                            View Project
                           </Link>
                         </td>
                       </tr>
