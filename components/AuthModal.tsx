@@ -78,6 +78,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.user.role);
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...userWithoutPassword } = data.user;
 
 // Store user details without the password
