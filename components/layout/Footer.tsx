@@ -15,13 +15,13 @@ const Footer = () => {
               Connecting buyers with skilled sellers for project collaboration.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-white">
+              <a href="https://github.com/Mayankkamriya" className="cursor-pointer text-gray-300 hover:text-white">
                 <FaGithub className="h-5 w-5" />
               </a>
               <a href="#" className="text-gray-300 hover:text-white">
                 <FaTwitter className="h-5 w-5" />
               </a>
-              <a href="#" className="text-gray-300 hover:text-white">
+              <a href="https://www.linkedin.com/in/mayank-kamriya/" className="cursor-pointer text-gray-300 hover:text-white">
                 <FaLinkedin className="h-5 w-5" />
               </a>
             </div>
@@ -37,17 +37,17 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/projects" className="text-gray-300 hover:text-white">
+                <Link href="#projects" className="text-gray-300 hover:text-white">
                   Projects
                 </Link>
               </li>
               <li>
-                <Link href="/bids" className="text-gray-300 hover:text-white">
+                <Link href="#bids" className="text-gray-300 hover:text-white">
                   Bids
                 </Link>
               </li>
               <li>
-                <Link href="/profile" className="text-gray-300 hover:text-white">
+                <Link href="/Profile" className="cursor-pointer text-gray-300 hover:text-white">
                   Profile
                 </Link>
               </li>
@@ -59,17 +59,17 @@ const Footer = () => {
             <h3 className="text-lg font-semibold">Legal</h3>
             <ul className="mt-4 space-y-2">
               <li>
-                <Link href="/privacy" className="text-gray-300 hover:text-white">
+                <Link href="#privacy" className="text-gray-300 hover:text-white">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-gray-300 hover:text-white">
+                <Link href="#terms" className="text-gray-300 hover:text-white">
                   Terms of Service
                 </Link>
               </li>
               <li>
-                <Link href="/cookies" className="text-gray-300 hover:text-white">
+                <Link href="#cookies" className="text-gray-300 hover:text-white">
                   Cookie Policy
                 </Link>
               </li>
@@ -81,9 +81,9 @@ const Footer = () => {
             <h3 className="text-lg font-semibold">Contact</h3>
             <ul className="mt-4 space-y-2">
               <li className="text-gray-300">support@TradePilot.com</li>
-              <li className="text-gray-300">+1 (555) 123-4567</li>
-              <li className="text-gray-300">123 Business Ave, Suite 100</li>
-              <li className="text-gray-300">San Francisco, CA 94107</li>
+              <li className="text-gray-300">+91 825 303 8815</li>
+              <li className="text-gray-300">73, Alkapuri</li>
+              <li className="text-gray-300"> Ratlam (M.P.)</li>
             </ul>
           </div>
         </div>

@@ -4,6 +4,14 @@ import AuthModal from '../AuthModal';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router';
 
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  role: 'SELLER' | 'BUYER';
+  createdAt: string;
+}
+
 export default function Navbar() {
   const router = useRouter();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -11,16 +19,43 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState<UserData | null>(null);
 
   // In Navbar component
-useEffect(() => {
-  const token = localStorage.getItem('token');
-  setIsLoggedIn(!!token);
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    setIsLoggedIn(!!token);
+    
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        setUser(null);
+      }
+    } else {
+      setUser(null);
+    }
 
   // Add this event listener
   const handleStorageChange = () => {
     const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
     setIsLoggedIn(!!token);
+    
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        setUser(null);
+      }
+    } else {
+      setUser(null);
+    }
   };
 
   window.addEventListener('storage', handleStorageChange);
@@ -48,6 +83,7 @@ useEffect(() => {
     localStorage.removeItem('role');
     localStorage.removeItem('user');
     setIsLoggedIn(false);
+    setUser(null);
     toast.success('Logged out successfully');
     router.push('/');
   };
@@ -68,6 +104,16 @@ useEffect(() => {
     return router.pathname === path;
   };
 
+  // Helper function to check if user can see buyer dashboard
+  const canSeeBuyerDashboard = () => {
+    return !isLoggedIn || (user && user.role === 'BUYER');
+  };
+
+  // Helper function to check if user can see seller dashboard
+  const canSeeSellerDashboard = () => {
+    return !isLoggedIn || (user && user.role === 'SELLER');
+  };
+
   return (
     <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -85,21 +131,38 @@ useEffect(() => {
               >
                 Home
               </Link>
+            {canSeeBuyerDashboard() && (
               <Link
                 href="/dashboard/buyer"
                 className={`${isActive('/dashboard/buyer') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} inline-flex items-center px-1 pt-1 border-b-2 text-base font-medium`}
               >
                 Buyer Dashboard
               </Link>
+            )}
+            {canSeeSellerDashboard() && (
               <Link
                 href="/dashboard/seller"
                 className={`${isActive('/dashboard/seller') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} inline-flex items-center px-1 pt-1 border-b-2 text-base font-medium`}
               >
                 Seller Dashboard
               </Link>
+            )}
+            {isLoggedIn && (
+              <Link
+                href="/Profile"
+                className={`${isActive('/profile') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'} inline-flex items-center px-1 pt-1 border-b-2 text-base font-medium`}
+              >
+                Profile
+              </Link>
+            )}
             </div>
           </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+          <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+        {isLoggedIn && user && (
+          <span className="text-gray-700 font-medium">
+            Welcome, {user.name}
+          </span>
+        )}
         {isLoggedIn ? (
           <button
             onClick={handleLogout}
@@ -198,6 +261,16 @@ useEffect(() => {
                   </svg>
                 </button>
               </div>
+
+              {/* User greeting for mobile */}
+              {isLoggedIn && user && (
+                <div className="mb-6 p-3 bg-gray-50 rounded-md">
+                  <p className="text-sm text-gray-600">Welcome,</p>
+                  <p className="font-medium text-gray-900">{user.name}</p>
+                  <p className="text-xs text-gray-500 capitalize">{user.role?.toLowerCase()}</p>
+                </div>
+              )}
+
               <div className="space-y-4">
                 <Link
                   href="/"
@@ -206,6 +279,7 @@ useEffect(() => {
                 >
                   Home
                 </Link>
+              {canSeeBuyerDashboard() && (
                 <Link
                   href="/dashboard/buyer"
                   className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/dashboard/buyer') ? 'text-gray-900 bg-gray-50' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'}`}
@@ -213,6 +287,8 @@ useEffect(() => {
                 >
                   Buyer Dashboard
                 </Link>
+              )}
+              {canSeeSellerDashboard() && (
                 <Link
                   href="/dashboard/seller"
                   className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/dashboard/seller') ? 'text-gray-900 bg-gray-50' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'}`}
@@ -220,6 +296,16 @@ useEffect(() => {
                 >
                   Seller Dashboard
                 </Link>
+              )}
+              {isLoggedIn && (
+                <Link
+                  href="/Profile"
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${isActive('/profile') ? 'text-gray-900 bg-gray-50' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'}`}
+                  onClick={closeMobileMenu}
+                >
+                  Profile
+                </Link>
+              )}
               </div>
               <div className="mt-8 space-y-4">
                 {isLoggedIn ? (
