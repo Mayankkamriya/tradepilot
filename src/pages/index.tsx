@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import ProjectCard from '../../components/ProjectCard';
 import { useEffect, useState } from 'react';
@@ -29,37 +28,15 @@ interface Project {
 }
 
 export default function Home() {
-  // In a real app, you would fetch these from your API
-  // const featuredProjects = [
-  //   {
-  //     id: '1',
-  //     title: 'Website Redesign',
-  //     description: 'Looking for a designer to redesign our company website with modern UI/UX principles.',
-  //     budget: '$1,000 - $2,500',
-  //     deadline: '2023-12-15',
-  //     status: 'Pending',
-  //     bidsCount: 5,
-  //   },
-  //   {
-  //     id: '2',
-  //     title: 'Mobile App Development',
-  //     description: 'Need an experienced React Native developer to build a cross-platform mobile application.',
-  //     budget: '$5,000 - $10,000',
-  //     deadline: '2023-12-30',
-  //     status: 'Pending',
-  //     bidsCount: 8,
-  //   },
-  // ];
-
-   const [featuredProjects, setfeaturedProjects] = useState<Project[]>([]);
+  const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
-  
+
     useEffect(() => {
       const fetchProjects = async () => {
         try {
           const result = await getProjects();
-          setfeaturedProjects(result);
+          setFeaturedProjects(result);
         } catch (err) {
           console.error(err);
           setError(true);
@@ -70,14 +47,6 @@ export default function Home() {
   
       fetchProjects();
     }, []);
-  
-    if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-    }
-  
-    if (error) {
-      return <div className="p-4 text-red-500">Failed to load projects.</div>;
-    }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -159,6 +128,19 @@ export default function Home() {
             </p>
           </div>
 
+      {loading ? (
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+            <p className="mt-4 text-gray-600">Loading projects...</p>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="text-center py-10">
+          <p className="text-red-500">Failed to load projects. Please try again later.</p>
+        </div>
+      ) : (
+        <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
@@ -173,6 +155,8 @@ export default function Home() {
               View All Projects
             </Link>
           </div>
+        </>
+      )}
         </div>
       </div>
     </div>

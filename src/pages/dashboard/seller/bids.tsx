@@ -38,7 +38,7 @@ export default function SellerBids() {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/auth/details', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/details`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ export default function SellerBids() {
       setLoading(false);
     }
   };
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getBidStatus = (bid: Bid) => {
     // You might want to add logic here to determine bid status
     // based on your business logic
@@ -129,7 +129,7 @@ export default function SellerBids() {
           <div className="divide-y divide-gray-200">
             {bids.length === 0 ? (
               <div className="px-4 py-12 text-center">
-                <p className="text-gray-500">You haven't placed any bids yet.</p>
+                <p className="text-gray-500">You haven&#39;t placed any bids yet.</p>
                 <Link
                   href="/dashboard/seller"
                   className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
