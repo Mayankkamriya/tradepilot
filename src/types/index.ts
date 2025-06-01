@@ -13,7 +13,7 @@ export interface Project {
   description: string;
   budgetRange: [number, number];
   deadline: Date;
-  status: 'pending' | 'in-progress' | 'completed';
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
   buyerId: string;
   sellerId?: string;
   createdAt: Date;

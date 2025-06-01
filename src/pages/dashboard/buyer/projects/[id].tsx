@@ -58,7 +58,7 @@ export default function BuyerProjectDetail() {
       setProject({
         ...project,
         selectedBid: bidId,
-        status: 'In Progress'
+        status: 'IN_PROGRESSs'
       });
     }
   };
@@ -68,11 +68,24 @@ export default function BuyerProjectDetail() {
     if (project) {
       setProject({
         ...project,
-        status: 'Completed'
+        status: 'COMPLETED'
       });
     }
   };
 
+  // Show loader while loading
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <p className="mt-4 text-gray-600">Loading projects...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error or not found message
   if (error || !project) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -94,17 +107,7 @@ export default function BuyerProjectDetail() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white shadow rounded-lg overflow-hidden">
-         
-                   {loading ?(   
-          <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-              <p className="mt-4 text-gray-600">Loading project details...</p>
-            </div>
-          </div>
-        ) : project ? (
-            <>
-                   {/* Project Header */}
+          {/* Project Header */}
           <div className="px-6 py-5 border-b border-gray-200">
             <div className="flex justify-between items-start">
               <div>
@@ -124,8 +127,7 @@ export default function BuyerProjectDetail() {
               </div>
             </div>
           </div>
-      </>
-      ) : null}
+
           {/* Project Details */}
           <div className="px-6 py-5">
             <h2 className="text-lg font-medium text-gray-900 mb-2">Project Description</h2>
@@ -171,7 +173,7 @@ export default function BuyerProjectDetail() {
                       <h4 className="text-sm font-medium text-gray-900 mb-1">Message</h4>
                       <p className="text-gray-700">{bid.message}</p>
                     </div>
-                    {project.status === 'Pending' && !project.selectedBid && (
+                    {project.status === 'PENDING' && !project.selectedBid && (
                       <div className="mt-4 flex justify-end">
                         <SelectBidButton
                           bidId={bid.id}
@@ -193,7 +195,7 @@ export default function BuyerProjectDetail() {
           </div>
 
           {/* Project Actions */}
-          {project.status === 'In Progress' && (
+          {project.status === 'IN_PROGRESS' && (
             <div className="border-t border-gray-200 px-6 py-5 bg-gray-50">
               <h2 className="text-lg font-medium text-gray-900 mb-4">Project Management</h2>
               <div className="space-y-4">
@@ -213,7 +215,7 @@ export default function BuyerProjectDetail() {
             </div>
           )}
 
-          {project.status === 'Completed' && (
+          {project.status === 'COMPLETED' && (
             <div className="border-t border-gray-200 px-6 py-5 bg-gray-50">
               <h2 className="text-lg font-medium text-gray-900 mb-4">Project Completed</h2>
               <div className="p-4 bg-white border border-gray-200 rounded-lg">

@@ -330,7 +330,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
             disabled={isLoading || isVerifying}
           >
             {isLoading ? (
-              'Sending OTP...'
+              type === 'login' ? 'Verifying...' : 'Sending OTP...'
             ) : isVerifying ? (
               'Verifying...'
             ) : type === 'login' ? (

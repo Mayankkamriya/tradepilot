@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import StatusBadge from '../../../components/StatusBadge';
-import { getProjects } from '../api/projectApi';
 
 interface Bid {
   id: string;
@@ -22,28 +21,65 @@ interface Project {
   budgetMax: number;
   deadline: string;
   status: string;
+  createdAt: string;
+  updatedAt: string;
+  buyerId: string;
+  sellerId: string | null;
+  bids?: Bid[];
+}
+
+interface UserDetails {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  projectsCreated: Project[];
+  projectsTaken: Project[];
   bids: Bid[];
 }
 
+// API function to get user details
+const getUserDetails = async (): Promise<UserDetails> => {
+  const token = localStorage.getItem('token'); // Adjust based on how you store the token
+  
+  const response = await fetch('http://localhost:5000/api/auth/details', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch user details');
+  }
+
+  const result = await response.json();
+  return result.data;
+};
+
 export default function BuyerDashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchUserDetails = async () => {
       try {
-        const result = await getProjects();
-        setProjects(result);
+        const userDetailsResult = await getUserDetails();
+        setUserDetails(userDetailsResult);
+        setProjects(userDetailsResult.projectsCreated);
       } catch (err) {
-        console.error(err);
+        console.error('Error fetching user details:', err);
         setError(true);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProjects();
+    fetchUserDetails();
   }, []);
 
 
@@ -55,7 +91,12 @@ export default function BuyerDashboard() {
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Your Projects</h1>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Your Projects</h1>
+            {userDetails && (
+              <p className="text-sm text-gray-600 mt-1">Welcome back, {userDetails.name}</p>
+            )}
+          </div>
           <Link
             href="/dashboard/buyer/projects/create"
             className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700"
@@ -65,19 +106,25 @@ export default function BuyerDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white shadow rounded-lg p-4">
             <h3 className="text-sm font-medium text-gray-500">Total Projects</h3>
             <p className="text-2xl font-semibold text-gray-900">{projects.length}</p>
           </div>
           <div className="bg-white shadow rounded-lg p-4">
-            <h3 className="text-sm font-medium text-gray-500">Projects in Progress</h3>
+            <h3 className="text-sm font-medium text-gray-500">Pending Projects</h3>
+            <p className="text-2xl font-semibold text-gray-900">
+              {projects.filter(p => p.status === 'PENDING').length}
+            </p>
+          </div>
+          <div className="bg-white shadow rounded-lg p-4">
+            <h3 className="text-sm font-medium text-gray-500">In Progress</h3>
             <p className="text-2xl font-semibold text-gray-900">
               {projects.filter(p => p.status === 'IN_PROGRESS').length}
             </p>
           </div>
           <div className="bg-white shadow rounded-lg p-4">
-            <h3 className="text-sm font-medium text-gray-500">Completed Projects</h3>
+            <h3 className="text-sm font-medium text-gray-500">Completed</h3>
             <p className="text-2xl font-semibold text-gray-900">
               {projects.filter(p => p.status === 'COMPLETED').length}
             </p>
@@ -87,14 +134,13 @@ export default function BuyerDashboard() {
         {/* Projects List */}
         <div className="bg-white shadow rounded-lg overflow-hidden">
           <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">Recent Projects</h3>
+            <h3 className="text-lg font-medium leading-6 text-gray-900">Your Created Projects</h3>
           </div>
           <div className="divide-y divide-gray-200">
-            
             {loading ? (
               <div className="flex flex-col items-center justify-center py-16">
                 <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-                <p className="mt-4 text-gray-600">Loading your bids...</p>
+                <p className="mt-4 text-gray-600">Loading your projects...</p>
               </div>
             ) : projects.length === 0 ? (
               <div className="px-4 py-12 text-center">
@@ -122,17 +168,24 @@ export default function BuyerDashboard() {
                         <StatusBadge status={project.status} />
                       </div>
                     </div>
-                    <div className="mt-2 sm:flex sm:justify-between">
-                      <div className="sm:flex">
-                        <p className="flex items-center text-sm text-gray-500">
-                          {project.description}
-                        </p>
+                    <div className="mt-2">
+                      <p className="text-sm text-gray-600 line-clamp-2">
+                        {project.description}
+                      </p>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
+                      <div className="flex items-center space-x-4">
+                        <span>
+                          Budget: ${project.budgetMin.toLocaleString()} - ${project.budgetMax.toLocaleString()}
+                        </span>
+                        <span>
+                          Deadline: {new Date(project.deadline).toLocaleDateString()}
+                        </span>
                       </div>
-                      <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
-                        <p>
-                          {project.bids.length} {project.bids.length === 1 ? 'bid' : 'bids'} • Deadline:{' '}
-                          {new Date(project.deadline).toLocaleDateString()}
-                        </p>
+                      <div className="flex items-center space-x-2">
+                        <span>
+                          Created: {new Date(project.createdAt).toLocaleDateString()}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -141,6 +194,34 @@ export default function BuyerDashboard() {
             )}
           </div>
         </div>
+
+        {/* Additional Info Section */}
+        {userDetails && userDetails.bids.length > 0 && (
+          <div className="mt-8 bg-white shadow rounded-lg overflow-hidden">
+            <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
+              <h3 className="text-lg font-medium leading-6 text-gray-900">Your Recent Bids</h3>
+              <p className="mt-1 text-sm text-gray-500">Bids you&#39;ve placed on other projects</p>
+            </div>
+            <div className="divide-y divide-gray-200">
+              {userDetails.bids.slice(0, 3).map((bid) => (
+                <div key={bid.id} className="px-4 py-4 sm:px-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">Bid Amount: ${bid.amount}</p>
+                      <p className="text-sm text-gray-500">Estimated Time: {bid.estimatedTime}</p>
+                      <p className="text-sm text-gray-500 mt-1">{bid.message}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm text-gray-500">
+                        {new Date(bid.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
