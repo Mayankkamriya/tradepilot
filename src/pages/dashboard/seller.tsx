@@ -1,4 +1,3 @@
-// "use client"
 import Link from 'next/link';
 import ProjectCard from '../../../components/ProjectCard';
 
@@ -15,9 +14,6 @@ interface Project {
   bids: Bid[];
 }
 
-import { getProjects } from '../api/projectApi';
-import { useEffect, useState } from 'react';
-
 interface Bid {
   id: string;
   amount: number;
@@ -29,12 +25,21 @@ interface Bid {
   projectId: string;
 }
 
+import { getProjects } from '../api/projectApi';
+import { useEffect, useState } from 'react';
+
 export default function BuyerDashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [token,setToken] = useState(localStorage.getItem('token'));
+
+  // Initialize token as null
+  const [token,setToken] = useState<string | null>(null);
+
+  // Read token from localStorage only on client side
+  useEffect(() => {
+    setToken(localStorage.getItem('token'));
+  }, []);
 
   useEffect(() => {
     const fetchProjects = async () => {

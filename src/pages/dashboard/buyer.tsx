@@ -40,9 +40,7 @@ interface UserDetails {
 }
 
 // API function to get user details
-const getUserDetails = async (): Promise<UserDetails> => {
-  const token = localStorage.getItem('token'); // Adjust based on how you store the token
-  
+const getUserDetails = async (token: string): Promise<UserDetails> => {
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/details`, {
     method: 'GET',
     headers: {
@@ -51,13 +49,10 @@ const getUserDetails = async (): Promise<UserDetails> => {
     },
   });
 
-  // if (!response.ok) {
-  //   toast.error('Failed to fetch user details');
-  // }
-
   const result = await response.json();
   return result.data;
 };
+
 
 export default function BuyerDashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -65,24 +60,43 @@ export default function BuyerDashboard() {
   const [loading, setLoading] = useState(true);
 //  const [error, setError] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [token,setToken] = useState(localStorage.getItem('token'));
+  // const [token,setToken] = useState(localStorage.getItem('token'));
+const [token, setToken] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      try {
-        const userDetailsResult = await getUserDetails();
-        setUserDetails(userDetailsResult);
-        setProjects(userDetailsResult?.projectsCreated);
-      } catch (err) {
-        console.error('Error fetching user details:', err);
-       // setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
+useEffect(() => {
+  if (typeof window !== 'undefined') {
+    const storedToken = localStorage.getItem('token');
+    setToken(storedToken);
+  }
+}, []);
 
+
+
+
+useEffect(() => {
+  const fetchUserDetails = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const userDetailsResult = await getUserDetails(token);
+      setUserDetails(userDetailsResult);
+      setProjects(userDetailsResult?.projectsCreated);
+    } catch (err) {
+      console.error('Error fetching user details:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Run only on client side
+  if (typeof window !== 'undefined') {
     fetchUserDetails();
-  }, []);
+  }
+}, []);
+
 
 
   // if (error) {
