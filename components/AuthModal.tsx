@@ -152,6 +152,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
 
       if (!response.ok) {
         toast.error(data.message || 'Login failed');
+        return;
       }
 
       localStorage.setItem('token', data.token);
@@ -176,7 +177,8 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
       });
     } catch (error) {
       const err = error as Error;
-      toast.error(err.message || 'Login failed. Please try again.');
+      console.log(err.message)
+      toast.error('Login failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
