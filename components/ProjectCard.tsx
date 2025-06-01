@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import StatusBadge from './StatusBadge';
 
@@ -29,6 +30,15 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const [role, setRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedRole = localStorage.getItem('role');
+      setRole(storedRole);
+    }
+  }, []);
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="p-6">
@@ -59,12 +69,14 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             {project.bids.length} {project.bids.length === 1 ? 'bid' : 'bids'}
 
           </span>
+        {role === 'SELLER' && (
           <Link
             href={`/dashboard/seller/projects/${project.id}`}
             className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
           >
             View Details →
           </Link>
+        )}
         </div>
       </div>
     </div>

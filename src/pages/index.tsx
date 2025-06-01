@@ -31,12 +31,20 @@ export default function Home() {
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
+    const [role, setRole] = useState<string | null>(null);
 
     useEffect(() => {
+      if (typeof window !== 'undefined') {
+        const storedRole = localStorage.getItem('role');
+        setRole(storedRole);
+      }
+
+      // Fetch projects
       const fetchProjects = async () => {
         try {
           const result = await getProjects();
-          setFeaturedProjects(result);
+          const pendingProjects = result.filter((project: Project) => project.status === 'PENDING');
+          setFeaturedProjects(pendingProjects);
         } catch (err) {
           console.error(err);
           setError(true);
@@ -57,6 +65,8 @@ export default function Home() {
           <p className="text-xl mb-8 max-w-3xl mx-auto">
             Connect with skilled professionals or find exciting projects to work on. Our platform makes collaboration easy.
           </p>
+
+        {role === 'BUYER' ? (
           <div className="flex justify-center space-x-4">
             <Link
               href="/dashboard/buyer/projects/create"
@@ -71,6 +81,16 @@ export default function Home() {
               Browse Projects
             </Link>
           </div>
+        ) : role === 'SELLER' ? (
+          <div className="flex justify-center">
+            <Link
+              href="/dashboard/seller"
+              className="px-6 py-3 border border-white text-base font-medium rounded-md text-white bg-indigo-700 hover:bg-indigo-800"
+            >
+              Browse Projects
+            </Link>
+          </div>
+        ) : null}
         </div>
       </div>
 

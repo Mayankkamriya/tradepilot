@@ -53,16 +53,52 @@ export default function BuyerProjectDetail() {
     fetchProject();
   }, [id]);
 
-  const handleSelectBid = async (bidId: string) => {
-    console.log(`Selected bid ${bidId} for project ${id}`);
+    const handleSelectBid = async (bidId: string) => {
+  console.log(`Selected bid ${bidId} for project ${id}`);
+  
+  try {
+    // Get token from local storage
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      toast.error('No authentication token found');
+    }
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/projects/${id}/status`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        status: 'IN_PROGRESS',
+        bidId: bidId
+      })
+    });
+
+    if (!response.ok) {
+      toast.error(`HTTP error! status: ${response.status}`);
+      return
+    }
+
+    const data = await response.json();
+    console.log('Success:', data);
+
+    // Update local state only after successful API call
     if (project) {
       setProject({
         ...project,
         selectedBid: bidId,
-        status: 'IN_PROGRESSs'
+        status: 'IN_PROGRESS'
       });
     }
-  };
+
+  } catch (error) {
+    toast.error('Error updating project status');
+    console.log(error)
+  }
+};
+
 
   const handleSubmitReview = async () => {
     console.log('Review submitted');
@@ -205,12 +241,12 @@ export default function BuyerProjectDetail() {
                   <p className="text-gray-700 mb-4">
                     The seller is working on your project. You&#39;ll be notified when they submit deliverables.
                   </p>
-                  <button
+                  {/* <button
                     type="button"
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
                   >
                     Message Seller
-                  </button>
+                  </button> */}
                 </div>
               </div>
             </div>
