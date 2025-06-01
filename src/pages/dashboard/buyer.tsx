@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import StatusBadge from '../../../components/StatusBadge';
-import {toast} from 'react-toastify'
+//import {toast} from 'react-toastify'
 interface Bid {
   id: string;
   amount: number;
@@ -43,7 +43,7 @@ interface UserDetails {
 const getUserDetails = async (): Promise<UserDetails> => {
   const token = localStorage.getItem('token'); // Adjust based on how you store the token
   
-  const response = await fetch('http://localhost:5000/api/auth/details', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/details`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export default function BuyerDashboard() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+//  const [error, setError] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [token,setToken] = useState(localStorage.getItem('token'));
 
@@ -75,7 +75,7 @@ export default function BuyerDashboard() {
         setProjects(userDetailsResult?.projectsCreated);
       } catch (err) {
         console.error('Error fetching user details:', err);
-        setError(true);
+       // setError(true);
       } finally {
         setLoading(false);
       }
