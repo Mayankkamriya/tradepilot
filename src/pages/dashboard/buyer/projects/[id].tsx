@@ -3,6 +3,7 @@ import StatusBadge from '../../../../../components/StatusBadge';
 import SelectBidButton from '../../../../../components/SelectBidButton';
 import { useEffect, useState } from 'react';
 import { getProjects } from '@/pages/api/projectApi';
+import { toast } from 'react-toastify';
 
 interface Project {
   id: string;
@@ -39,7 +40,7 @@ export default function BuyerProjectDetail() {
       try {
         const allProjects = await getProjects();
         const foundProject = allProjects.find((p: Project) => p.id === id);
-        if (!foundProject) throw new Error("Project not found");
+        if (!foundProject) toast.error("Project not found");
         setProject(foundProject);
         setLoading(false);
       } catch (error) {

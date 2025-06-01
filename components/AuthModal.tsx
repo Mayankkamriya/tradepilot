@@ -93,7 +93,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'OTP verification failed');
+        toast.error(data.message || 'OTP verification failed');
       }
 
       localStorage.setItem('token', data.token);
@@ -151,7 +151,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        toast.error(data.message || 'Login failed');
       }
 
       localStorage.setItem('token', data.token);
@@ -199,7 +199,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
           <h2 className="text-xl font-bold">
             {type === 'login' ? 'Login' : 'Register'}
           </h2>
-          <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 text-4xl cursor-pointer">
             &times;
           </button>
         </div>
@@ -279,7 +279,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
                 Register as
               </label>
               <div className="flex space-x-4">
-                <label className="inline-flex items-center">
+                <label className="inline-flex items-center cursor-pointer">
                   <input
                     type="radio"
                     className="form-radio h-4 w-4 text-indigo-600"
@@ -291,7 +291,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
                   />
                   <span className="ml-2 text-gray-700">Buyer</span>
                 </label>
-                <label className="inline-flex items-center">
+                <label className="inline-flex items-center cursor-pointer">
                   <input
                     type="radio"
                     className="form-radio h-4 w-4 text-indigo-600"

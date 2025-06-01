@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import StatusBadge from '../../../../../components/StatusBadge';
 import BidForm from '../../../../../components/BidForm';
 import { getProjects } from '@/pages/api/projectApi';
-
+import {toast} from 'react-toastify';
 interface Project {
   id: string;
   title: string;
@@ -36,7 +36,7 @@ export default function ProjectDetail() {
       setLoading(true);
       const allProjects = await getProjects();
       const foundProject = allProjects.find((p: Project) => p.id === id);
-      if (!foundProject) throw new Error("Project not found");
+      if (!foundProject) toast.error("Project not found");
       setProject(foundProject);
       setError(false);
     } catch (error) {

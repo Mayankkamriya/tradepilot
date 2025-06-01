@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import StatusBadge from '../../../components/StatusBadge';
-
+import {toast} from 'react-toastify'
 interface Bid {
   id: string;
   amount: number;
@@ -51,9 +51,9 @@ const getUserDetails = async (): Promise<UserDetails> => {
     },
   });
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch user details');
-  }
+  // if (!response.ok) {
+  //   toast.error('Failed to fetch user details');
+  // }
 
   const result = await response.json();
   return result.data;
@@ -64,13 +64,15 @@ export default function BuyerDashboard() {
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [token,setToken] = useState(localStorage.getItem('token'));
 
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const userDetailsResult = await getUserDetails();
         setUserDetails(userDetailsResult);
-        setProjects(userDetailsResult.projectsCreated);
+        setProjects(userDetailsResult?.projectsCreated);
       } catch (err) {
         console.error('Error fetching user details:', err);
         setError(true);
@@ -83,10 +85,31 @@ export default function BuyerDashboard() {
   }, []);
 
 
-  if (error) {
-    return <div className="p-4 text-red-500">Failed to load projects.</div>;
+  // if (error) {
+  //   return <div className="p-4 text-red-500">Failed to load projects.</div>;
+  // }
+if ( !token) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center py-16">
+            <div className="mx-auto h-20 w-20 text-red-400">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L5.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+              </svg>
+            </div>
+            <p className="text-red-500 mt-4">No authentication token found</p>
+            <Link
+              href="/login"
+              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
+            >
+              Go to Login
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

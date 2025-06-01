@@ -24,7 +24,7 @@ export default function BidForm({ projectId, onBidSubmitted }: BidFormProps) {
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('token');
       if (!token) {
-        toast.error('Please login to submit a bid');
+        // toast.error('Please login to submit a bid');
         return;
       }
     }
