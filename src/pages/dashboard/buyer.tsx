@@ -64,8 +64,18 @@ export default function BuyerDashboard() {
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [loading, setLoading] = useState(true);
 //  const [error, setError] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [token,setToken] = useState(localStorage.getItem('token'));
+
+
+  
+  // const [token,setToken] = useState(localStorage.getItem('token'));
+const [token, setToken] = useState<string | null>(null);
+
+
+
+  useEffect(() => {
+  const tokenFromStorage = localStorage.getItem('token');
+  setToken(tokenFromStorage);
+}, []);
 
   useEffect(() => {
     const fetchUserDetails = async () => {
