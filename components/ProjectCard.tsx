@@ -33,10 +33,30 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
+  // Initial check for role
+  const checkRole = () => {
     if (typeof window !== 'undefined') {
       const storedRole = localStorage.getItem('role');
       setRole(storedRole);
     }
+  };
+
+  checkRole();
+
+  // Listen for storage events (both native and custom)
+  const handleStorageChange = () => {
+    checkRole();
+  };
+
+  // Listen for the custom events you dispatch in login
+  window.addEventListener('storage', handleStorageChange);
+  window.addEventListener('storageUpdate', handleStorageChange);
+
+  // Cleanup event listeners
+  return () => {
+    window.removeEventListener('storage', handleStorageChange);
+    window.removeEventListener('storageUpdate', handleStorageChange);
+  };
   }, []);
 
   return (

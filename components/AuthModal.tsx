@@ -163,6 +163,7 @@ export default function AuthModal({ isOpen, onClose, type, onTypeChange }: AuthM
       localStorage.setItem('user', JSON.stringify(userWithoutPassword));
 
       window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new Event('storageUpdate'));
 
       toast.success('Login successful!');
       router.push('/');

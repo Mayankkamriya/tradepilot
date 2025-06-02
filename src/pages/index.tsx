@@ -33,11 +33,34 @@ export default function Home() {
     const [error, setError] = useState(false);
     const [role, setRole] = useState<string | null>(null);
 
-    useEffect(() => {
+  const updateRoleFromStorage = () => {
       if (typeof window !== 'undefined') {
         const storedRole = localStorage.getItem('role');
         setRole(storedRole);
       }
+  };
+
+  useEffect(() => {
+    // Initial role setup
+    updateRoleFromStorage();
+
+    // Listen for storage events (including custom ones)
+    const handleStorageChange = (e: StorageEvent | Event) => {
+      // Check if it's a storage event or custom event
+      if (e instanceof StorageEvent) {
+        // Handle cross-tab storage changes
+        if (e.key === 'role') {
+          setRole(e.newValue);
+        }
+      } else {
+        // Handle same-tab storage changes (custom event)
+        updateRoleFromStorage();
+      }
+    };
+
+    // Listen for both storage events and custom events
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('storageUpdate', handleStorageChange);
 
       // Fetch projects
       const fetchProjects = async () => {
@@ -54,6 +77,12 @@ export default function Home() {
       };
   
       fetchProjects();
+
+      // Cleanup event listeners
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+        window.removeEventListener('storageUpdate', handleStorageChange);
+      };
     }, []);
 
   return (
