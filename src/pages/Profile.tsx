@@ -10,6 +10,7 @@ interface Bid {
   createdAt: string;
   sellerName: string;
   sellerId: string;
+  bidStatus: string;
   projectId: string;
 }
 
@@ -257,9 +258,21 @@ export default function ProfilePage() {
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
                           <p className="text-lg font-semibold text-indigo-600">
                             ₹{bid.amount.toLocaleString()}
                           </p>
+                          {/* Status Badge */}
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              bid.bidStatus === 'SELECTED'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-yellow-100 text-yellow-800'
+                            }`}
+                          >
+                            {bid.bidStatus === 'SELECTED' ? 'Selected' : 'Submitted'}
+                          </span>
+                        </div>
                           <span className="text-sm text-gray-500">
                             {new Date(bid.createdAt).toLocaleDateString()}
                           </span>

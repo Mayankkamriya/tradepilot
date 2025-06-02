@@ -11,6 +11,7 @@ interface Bid {
   createdAt: string;
   sellerName: string;
   sellerId: string;
+  bidStatus: string;
   projectId: string;
   projectTitle?: string;
   projectStatus?: string;
@@ -75,7 +76,7 @@ export default function SellerBids() {
   };
   /* eslint-disable @typescript-eslint/no-unused-vars */
   const getBidStatus = (bid: Bid) => { 
-    return 'Submitted';
+    return bid.bidStatus;
   };
 
   if (error) {
