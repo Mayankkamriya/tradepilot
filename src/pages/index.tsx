@@ -128,12 +128,6 @@ export default function Home() {
             >
               Post a Project
             </Link>
-            <Link
-              href="/dashboard/seller"
-              className="px-6 py-3 border border-white text-base font-medium rounded-md text-white bg-indigo-700 hover:bg-indigo-800"
-            >
-              Browse Projects
-            </Link>
           </div>
         )}
         </div>
