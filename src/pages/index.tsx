@@ -119,7 +119,23 @@ export default function Home() {
               Browse Projects
             </Link>
           </div>
-        ) : null}
+        ) : (
+          // Show both buttons when no role is set (user not authenticated)
+          <div className="flex justify-center space-x-4">
+            <Link
+              href="/dashboard/buyer/projects/create"
+              className="px-6 py-3 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-white hover:bg-gray-100"
+            >
+              Post a Project
+            </Link>
+            <Link
+              href="/dashboard/seller"
+              className="px-6 py-3 border border-white text-base font-medium rounded-md text-white bg-indigo-700 hover:bg-indigo-800"
+            >
+              Browse Projects
+            </Link>
+          </div>
+        )}
         </div>
       </div>
 
