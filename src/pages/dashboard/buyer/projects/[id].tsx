@@ -100,15 +100,15 @@ export default function BuyerProjectDetail() {
 };
 
 
-  const handleSubmitReview = async () => {
-    console.log('Review submitted');
-    if (project) {
-      setProject({
-        ...project,
-        status: 'COMPLETED'
-      });
-    }
-  };
+  // const handleSubmitReview = async () => {
+  //   console.log('Review submitted');
+  //   if (project) {
+  //     setProject({
+  //       ...project,
+  //       status: 'COMPLETED'
+  //     });
+  //   }
+  // };
 
   // Show loader while loading
   if (loading) {
