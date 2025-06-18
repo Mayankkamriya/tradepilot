@@ -75,7 +75,7 @@ export default function BuyerDashboard() {
             </div>
             <p className="text-red-500 mt-4">No authentication token found</p>
             <Link
-              href="/login"
+              href="/"
               className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
             >
               Go to Login
