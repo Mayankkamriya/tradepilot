@@ -252,7 +252,8 @@ export default function BuyerProjectDetail() {
             </div>
           )}
 
-          {project.status === 'COMPLETED' && (
+{/* Review submit and find attach documents */}
+          {/* {project.status === 'COMPLETED' && (
             <div className="border-t border-gray-200 px-6 py-5 bg-gray-50">
               <h2 className="text-lg font-medium text-gray-900 mb-4">Project Completed</h2>
               <div className="p-4 bg-white border border-gray-200 rounded-lg">
@@ -323,7 +324,7 @@ export default function BuyerProjectDetail() {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>
